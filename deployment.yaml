@@ -13,8 +13,8 @@ spec:
     spec:
       containers:
       - name: snakegame
-        image: snakegame:latest
-        imagePullPolicy: Never
+        image: 444062204470.dkr.ecr.eu-central-1.amazonaws.com/snakegame:v1
+        imagePullPolicy: Always
         resources:
           limits:
             memory: "128Mi"
@@ -26,8 +26,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: node-app-service
+  annotations:
+    # This tells the controller to create an IP-based Load Balancer for Fargate
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: snakegame
   ports:
